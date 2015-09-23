@@ -25,9 +25,9 @@ void messageCb( const geometry_msgs::Twist& msg)
   last_message = millis();
 }
 
-ros::Subscriber<geometry_msgs::Twist> sub("cam_servo_control",messageCb);
+ros::Subscriber<geometry_msgs::Twist> sub("steadycam_servo_control",messageCb);
 geometry_msgs::Quaternion quaternion;
-ros::Publisher chatter("steadycam_IMU",&quaternion);
+ros::Publisher chatter("steadycam_imu_data",&quaternion);
 
 
 void setup()
