@@ -1,7 +1,7 @@
 
 #include <ros.h>
-#include <geometry_msgs/Twist.h>
-#include <geometry_msgs/Quaternion.h>
+#include <geometry_msgs/TwistStamped.h>
+#include <geometry_msgs/QuaternionStamped.h>
 #include <DynamixelSerial1.h>
 
 #define maxRpm 59.0
@@ -17,16 +17,16 @@ int time = 0;
 int time_sh = 0;
 int last_message = 0;
 
-void messageCb( const geometry_msgs::Twist& msg)
+void messageCb( const geometry_msgs::TwistStamped& msg)
 {
-  angular_x = msg.angular.x;
-  angular_y = msg.angular.y;
-  angular_z = msg.angular.z;
+  angular_x = msg.twist.angular.x;
+  angular_y = msg.twist.angular.y;
+  angular_z = msg.twist.angular.z;
   last_message = millis();
 }
 
-ros::Subscriber<geometry_msgs::Twist> sub("steadycam_servo_control",messageCb);
-geometry_msgs::Quaternion quaternion;
+ros::Subscriber<geometry_msgs::TwistStamped> sub("steadycam_servo_control",messageCb);
+geometry_msgs::QuaternionStamped quaternion;
 ros::Publisher chatter("steadycam_imu_data",&quaternion);
 
 
@@ -44,8 +44,8 @@ void setup()
 void loop()
 {
   time = millis();
-  quaternion.x = angular_to_rpm(angular_x);
-  quaternion.y = angular_y;
+  quaternion.quaternion.x = angular_to_rpm(angular_x);
+  quaternion.quaternion.y = angular_y;
   if(time-last_message > timeout_sec*1000)
   {
     timeout();
@@ -56,6 +56,7 @@ void loop()
     //har vi fått ny IMU data?
     //hvis ja, send ny imu data
     //do-actions like "send data"
+    quaternion.header.stamp.sec = millis()/1000;
     chatter.publish(&quaternion);
     time_sh = time;
     Dynamixel.turn(1,sign(angular_x),angular_to_rpm(angular_x));
