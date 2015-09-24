@@ -1,4 +1,4 @@
 std_msgs/Bool on_off
 string control_type
-geometry_msgs/Quaternion angle_lock
-geometry_msgs/Point position_lock
+geometry_msgs/QuaternionStamped angle_lock
+geometry_msgs/PointStamped position_lock
