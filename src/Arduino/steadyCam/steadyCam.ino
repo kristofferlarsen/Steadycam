@@ -1,7 +1,7 @@
 
 #include <ros.h>
-#include <geometry_msgs/TwistStamped.h>
-#include <geometry_msgs/QuaternionStamped.h>
+#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Vector3.h>
 #include <DynamixelSerial1.h>
 
 #define maxRpm 59.0
@@ -16,23 +16,28 @@ int cycle_freq = 40; //Hz
 int time = 0;
 int time_sh = 0;
 int last_message = 0;
+double roll = 0.0;
+double pitch = 0.0;
+double yaw = 0.0;
+boolean newMessage = false;
 
-void messageCb( const geometry_msgs::TwistStamped& msg)
+void messageCb( const geometry_msgs::Twist& msg)
 {
-  angular_x = msg.twist.angular.x;
-  angular_y = msg.twist.angular.y;
-  angular_z = msg.twist.angular.z;
+  angular_x = msg.angular.x;
+  angular_y = msg.angular.y;
+  angular_z = msg.angular.z;
   last_message = millis();
 }
 
-ros::Subscriber<geometry_msgs::TwistStamped> sub("steadycam_servo_control",messageCb);
-geometry_msgs::QuaternionStamped quaternion;
-ros::Publisher chatter("steadycam_imu_data",&quaternion);
+ros::Subscriber<geometry_msgs::Twist> sub("steadycam_servo_control",messageCb);
+geometry_msgs::Vector3 rpy;
+ros::Publisher chatter("steadycam_imu_data",&rpy);
 
 
 void setup()
 {
   Dynamixel.begin(1000000,2);
+  Serial2.begin(115200);
   nh.initNode();
   nh.advertise(chatter);
   nh.subscribe(sub);
@@ -42,10 +47,20 @@ void setup()
 }
 
 void loop()
-{
+{   
   time = millis();
-  quaternion.quaternion.x = angular_to_rpm(angular_x);
-  quaternion.quaternion.y = angular_y;
+  if(Serial2.available() > 10)
+  {
+    char start = Serial2.read();
+    if(start == '!')
+    {
+      roll = Serial2.parseFloat();
+      pitch = Serial2.parseFloat();
+      yaw = Serial2.parseFloat();
+      newMessage = true;
+    }
+  }
+
   if(time-last_message > timeout_sec*1000)
   {
     timeout();
@@ -56,12 +71,20 @@ void loop()
     //har vi fått ny IMU data?
     //hvis ja, send ny imu data
     //do-actions like "send data"
-    quaternion.header.stamp.sec = millis()/1000;
-    chatter.publish(&quaternion);
+    //rpy.header.stamp.sec = millis()/1000;
+    //rpy.header.stamp.nsec = micros();
+    if(newMessage)
+    {
+      newMessage = false;
+      rpy.x = roll;
+      rpy.y = pitch;
+      rpy.z = yaw;
+      chatter.publish(&rpy);
+    }
     time_sh = time;
-    Dynamixel.turn(1,sign(angular_x),angular_to_rpm(angular_x));
-    Dynamixel.turn(2,sign(angular_y),angular_to_rpm(angular_y));
-    Dynamixel.turn(3,sign(angular_z),angular_to_rpm(angular_z));
+    //Dynamixel.turn(1,sign(angular_x),angular_to_rpm(angular_x));
+    //Dynamixel.turn(2,sign(angular_y),angular_to_rpm(angular_y));
+    //Dynamixel.turn(3,sign(angular_z),angular_to_rpm(angular_z));
   }  
   nh.spinOnce();
 }
@@ -91,7 +114,7 @@ void timeout()
   angular_x = 0.0;
   angular_y = 0.0;
   angular_z = 0.0;
-  Dynamixel.turn(1,true,0);
-  Dynamixel.turn(1,true,0);
-  Dynamixel.turn(1,true,0);
+  //Dynamixel.turn(1,true,0);
+  //Dynamixel.turn(1,true,0);
+  //Dynamixel.turn(1,true,0);
 }

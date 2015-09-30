@@ -1,7 +1,7 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "geometry_msgs/Twist.h"
-#include "geometry_msgs/Quaternion.h"
+#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Vector3.h>
 #include "steadycam/Control.h"
 #include "steadycam/setRunning.h"
 #include "steadycam/getRunning.h"
@@ -15,12 +15,22 @@
 using namespace std;
 using namespace ros;
 
-void imuCallback(const geometry_msgs::Quaternion::ConstPtr& msg)
+string control_mode = "";
+bool running = false;
+double refRoll = 0.0;
+double refPitch = 0.0;
+double refYaw = 0.0;
+double actRoll = 0.0;
+double actPitch = 0.0;
+double actYaw = 0.0;
+
+void imuCallback(const geometry_msgs::Vector3::ConstPtr& rpy)
 {
     //on do callback from IMU data
+    actRoll = rpy->x;
+    actPitch = rpy->y;
+    actYaw = rpy->z;
 }
-bool running = false;
-string control_mode = "";
 
 bool setRunningCallBack(steadycam::setRunning::Request &req,
                         steadycam::setRunning::Response &res)
@@ -29,7 +39,6 @@ bool setRunningCallBack(steadycam::setRunning::Request &req,
     running = req.running;
     return true;
 }
-
 bool setPointCallBack(steadycam::setPoint::Request &req,
                       steadycam::setPoint::Response &res)
 {
@@ -46,26 +55,22 @@ bool setControlModeCallBack(steadycam::setControlMode::Request &req,
     control_mode = req.controlMode;
     return true;
 }
-
 bool getControlModeCallBack(steadycam::getControlMode::Request &req,
                             steadycam::getControlMode::Response &res)
 {
     res.controlMode = control_mode;
     return true;
 }
-
 bool getEulerAnglesCallBack(steadycam::getEulerAngles::Request &req,
                             steadycam::getEulerAngles::Response &res)
 {
     return true;
 }
-
 bool getPointCallBack(steadycam::getPoint::Request &req,
                       steadycam::getPoint::Response &res)
 {
     return true;
 }
-
 bool getRunningCallBack(steadycam::getRunning::Request &req,
                         steadycam::getRunning::Response &res)
 {
@@ -82,9 +87,8 @@ int main(int argc, char **argv)
     Publisher pub = n.advertise<geometry_msgs::Twist>("steadycam_servo_control",1000);
     Subscriber sub = n.subscribe("steadycam_imu_data",1000,imuCallback);
 
-
     ServiceServer service1 = n.advertiseService("setRunning", setRunningCallBack);
-    ServiceServer service2_ = n.advertiseService("setPoint",setPointCallBack);
+    ServiceServer service2_= n.advertiseService("setPoint",setPointCallBack);
     ServiceServer service3 = n.advertiseService("setEulerAngles",setEulerAnglesCallBack);
     ServiceServer service4 = n.advertiseService("setControlMode",setControlModeCallBack);
     ServiceServer service5 = n.advertiseService("getRunning",getRunningCallBack);
@@ -95,13 +99,12 @@ int main(int argc, char **argv)
     Rate loop_rate(60);
 
     float count = 0.0;
-    geometry_msgs::Vector3 vector;
     geometry_msgs::Twist msg;
     while(ros::ok())
     {
-        vector.x = 6.1*sin(count*(2*3.1415/480));
-        vector.y = 2.0*sin(count*(2*3.1415/480));
-        msg.angular = vector;
+        msg.angular.x = actRoll;
+        msg.angular.y = actPitch;
+        msg.angular.z = actYaw;
         pub.publish(msg);
 
         spinOnce();

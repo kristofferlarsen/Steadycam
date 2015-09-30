@@ -2,8 +2,6 @@
 #include <steadycam/setRunning.h>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "geometry_msgs/Twist.h"
-#include "geometry_msgs/Quaternion.h"
 #include "steadycam/Control.h"
 
 using namespace std;
