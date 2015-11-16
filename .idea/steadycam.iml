@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
+    <content url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Debug/catkin_generated/steadycam-msg-extras.cmake.develspace.in">
+      <sourceFolder url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Debug/catkin_generated/steadycam-msg-extras.cmake.develspace.in" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Debug/catkin_generated/steadycam-msg-extras.cmake.installspace.in">
+      <sourceFolder url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Debug/catkin_generated/steadycam-msg-extras.cmake.installspace.in" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/MinSizeRel/catkin_generated/steadycam-msg-extras.cmake.develspace.in">
+      <sourceFolder url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/MinSizeRel/catkin_generated/steadycam-msg-extras.cmake.develspace.in" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/MinSizeRel/catkin_generated/steadycam-msg-extras.cmake.installspace.in">
+      <sourceFolder url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/MinSizeRel/catkin_generated/steadycam-msg-extras.cmake.installspace.in" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/RelWithDebInfo/catkin_generated/steadycam-msg-extras.cmake.develspace.in">
+      <sourceFolder url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/RelWithDebInfo/catkin_generated/steadycam-msg-extras.cmake.develspace.in" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/RelWithDebInfo/catkin_generated/steadycam-msg-extras.cmake.installspace.in">
+      <sourceFolder url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/RelWithDebInfo/catkin_generated/steadycam-msg-extras.cmake.installspace.in" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Release/catkin_generated/steadycam-msg-extras.cmake.develspace.in">
+      <sourceFolder url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Release/catkin_generated/steadycam-msg-extras.cmake.develspace.in" isTestSource="false" />
+    </content>
+    <content url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Release/catkin_generated/steadycam-msg-extras.cmake.installspace.in">
+      <sourceFolder url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Release/catkin_generated/steadycam-msg-extras.cmake.installspace.in" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/package.xml" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/steadycam.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/steadycam.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/steadycam_test.cpp" isTestSource="false" />
     </content>
     <content url="file:///opt/ros/indigo/share/catkin/cmake/em/pkg.pc.em">
       <sourceFolder url="file:///opt/ros/indigo/share/catkin/cmake/em/pkg.pc.em" isTestSource="false" />
@@ -45,6 +71,21 @@
     <content url="file:///opt/ros/indigo/share/catkin/package.xml">
       <sourceFolder url="file:///opt/ros/indigo/share/catkin/package.xml" isTestSource="false" />
     </content>
+    <content url="file:///opt/ros/indigo/share/genmsg/cmake/pkg-genmsg.cmake.em">
+      <sourceFolder url="file:///opt/ros/indigo/share/genmsg/cmake/pkg-genmsg.cmake.em" isTestSource="false" />
+    </content>
+    <content url="file:///opt/ros/indigo/share/genmsg/cmake/pkg-genmsg.context.in">
+      <sourceFolder url="file:///opt/ros/indigo/share/genmsg/cmake/pkg-genmsg.context.in" isTestSource="false" />
+    </content>
+    <content url="file:///opt/ros/indigo/share/genmsg/cmake/pkg-msg-extras.cmake.in">
+      <sourceFolder url="file:///opt/ros/indigo/share/genmsg/cmake/pkg-msg-extras.cmake.in" isTestSource="false" />
+    </content>
+    <content url="file:///opt/ros/indigo/share/genmsg/cmake/pkg-msg-paths.cmake.develspace.in">
+      <sourceFolder url="file:///opt/ros/indigo/share/genmsg/cmake/pkg-msg-paths.cmake.develspace.in" isTestSource="false" />
+    </content>
+    <content url="file:///opt/ros/indigo/share/genmsg/cmake/pkg-msg-paths.cmake.installspace.in">
+      <sourceFolder url="file:///opt/ros/indigo/share/genmsg/cmake/pkg-msg-paths.cmake.installspace.in" isTestSource="false" />
+    </content>
     <content url="file:///usr/src/gtest">
       <sourceFolder url="file:///usr/src/gtest/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file:///usr/src/gtest/cmake/internal_utils.cmake" isTestSource="false" />
@@ -56,6 +97,10 @@
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
+          <root url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Debug/devel/include" />
+          <root url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/MinSizeRel/devel/include" />
+          <root url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/RelWithDebInfo/devel/include" />
+          <root url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Release/devel/include" />
           <root url="file://$MODULE_DIR$/../../devel/include" />
           <root url="file:///opt/ros/indigo/include" />
           <root url="file:///usr/include" />
@@ -64,6 +109,10 @@
           <root url="file:///usr/local/include" />
         </CLASSES>
         <SOURCES>
+          <root url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Debug/devel/include" />
+          <root url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/MinSizeRel/devel/include" />
+          <root url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/RelWithDebInfo/devel/include" />
+          <root url="file://$USER_HOME$/.clion11/system/cmake/generated/c3bb47c6/c3bb47c6/Release/devel/include" />
           <root url="file://$MODULE_DIR$/../../devel/include" />
           <root url="file:///opt/ros/indigo/include" />
           <root url="file:///usr/include" />

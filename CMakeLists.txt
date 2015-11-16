@@ -12,6 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
 )
 
+find_package(Eigen REQUIRED)
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -112,6 +114,7 @@ catkin_package(
 #  LIBRARIES steadycam
 #  CATKIN_DEPENDS geometry_msgs roscpp rospy std_msgs
 #  DEPENDS system_lib
+   DEPENDS Eigen
 )
 
 ###########
@@ -123,6 +126,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${Eigen_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -196,7 +200,10 @@ include_directories(
 # catkin_add_nosetests(test)
 
 add_executable(steadycam src/steadycam.cpp)
-target_link_libraries(steadycam ${catkin_LIBRARIES})
+target_link_libraries(steadycam 
+ ${catkin_LIBRARIES}
+ ${Eigen_LIBRARIES}
+)
 
 add_executable(steadycam_test src/steadycam_test.cpp)
 target_link_libraries(steadycam_test ${catkin_LIBRARIES})
