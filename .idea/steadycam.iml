@@ -29,7 +29,6 @@
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/package.xml" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/steadycam.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/steadycam.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/steadycam_test.cpp" isTestSource="false" />
     </content>
     <content url="file:///opt/ros/indigo/share/catkin/cmake/em/pkg.pc.em">

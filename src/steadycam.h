@@ -6,17 +6,18 @@
 #define STEADYCAM_STEADYCAM_H
 
 #include <eigen3/Eigen/Dense>
+using namespace Eigen;
 
 struct Forward{
-    Eigen::Matrix4f Ti;
-    Eigen::Matrix3f Ji;
+    Matrix4f Ti;
+    Matrix3f Ji;
 };
 
-Eigen::Matrix4f Rot(double x, double y, double z);
+Matrix4f Rot(double x, double y, double z);
 
 Forward forwardkin(double qh[4], double qhg[3]);
 
-//double[] invkin(Matrix4f desired, double qh[4], double qhg[3]);
+Vector3f invkin(Matrix4f desired, double qh[4]);
 
 bool setRunningCallBack(steadycam::setRunning::Request &req,
                         steadycam::setRunning::Response &res);
