@@ -199,7 +199,7 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(steadycam src/steadycam.cpp)
+add_executable(steadycam src/steadycam.cpp src/steadycam.h)
 target_link_libraries(steadycam 
  ${catkin_LIBRARIES}
  ${Eigen_LIBRARIES}
