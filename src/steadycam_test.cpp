@@ -1,8 +1,12 @@
 #include <steadycam/getRunning.h>
 #include <steadycam/setRunning.h>
+#include <steadycam/setEulerAngles.h>
+#include <steadycam/setControlMode.h>
+#include <steadycam/setEulerAngles.h>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "steadycam/Control.h"
+#include "math.h"
 
 using namespace std;
 using namespace ros;
@@ -37,18 +41,46 @@ steadycam::Control buildPackage(bool on_off,string control_type,double angle_loc
 
 int main(int argc, char **argv)
 {
+    cout << "Starting Node \n\r";
+    bool start = true;
+    double counter = 0.0;
     init(argc,argv,"steadycam_test");
     NodeHandle n;
-    Rate loop_rate(1);
+    Rate loop_rate(60);
+    cout << "Setting up service clients \n\r";
     ServiceClient setRunning_client = n.serviceClient<steadycam::setRunning>("setRunning");
-    steadycam::setRunning srv;
+    ServiceClient setControlMode_client = n.serviceClient<steadycam::setControlMode>("setControlMode");
+    ServiceClient setEulerAngles_client = n.serviceClient<steadycam::setEulerAngles>("setEulerAngles");
+    steadycam::setEulerAngles s_eulerAngles;
+    steadycam::setControlMode s_controlMode;
+    steadycam::setRunning s_running;
+
+    double scale = M_PI/16.0;
     while(ros::ok())
     {
-        srv.request.running = sender;
-        sender = !sender;
-        setRunning_client.call(srv);
+        if(start){
+            cout << "Setting initial values \n\r";
+            s_running.request.running = true;
+            s_controlMode.request.controlMode = false;
+            s_eulerAngles.request.angle_lock.x = 0.0;
+            s_eulerAngles.request.angle_lock.y = 0.0;
+            s_eulerAngles.request.angle_lock.z = 0.0;
+            cout << "Sending values \n\r";
+            setRunning_client.call(s_running);
+            setControlMode_client.call(s_controlMode);
+            setEulerAngles_client.call(s_eulerAngles);
+            start = false;
+        }
+        else{
+            //s_eulerAngles.request.angle_lock.x = scale*sin(counter/(2.0*M_PI));
+            //s_eulerAngles.request.angle_lock.y = scale*sin(counter/(2.0*M_PI));
+            s_eulerAngles.request.angle_lock.z = scale*sin(counter/(2.0*M_PI));
+            setEulerAngles_client.call(s_eulerAngles);
+        }
+
         spinOnce();
         loop_rate.sleep();
+        counter = counter +0.8;
     }
     return 0;
 }
