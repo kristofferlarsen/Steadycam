@@ -48,7 +48,7 @@ void loop()
   {
     time_sh = time;
     Dynamixel.moveSpeed(1,modifiedMap(anglex,-2.617993878,2.617993878,0.0,1023.0),movespeed);
-    Dynamixel.moveSpeed(2,modifiedMap(angley,-2.617993878,2.617993878,0.0,1023.0),movespeed);
+    Dynamixel.moveSpeed(2,modifiedMap(angley,2.617993878,-2.617993878,0.0,1023.0),movespeed);
     Dynamixel.moveSpeed(3,modifiedMap(anglez,-2.617993878,2.617993878,0.0,1023.0),movespeed);
   }
   nh.spinOnce();
