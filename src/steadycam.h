@@ -6,6 +6,8 @@
 #define STEADYCAM_STEADYCAM_H
 
 #include <eigen3/Eigen/Dense>
+#include "control_msgs/JointTrajectoryControllerState.h"
+
 using namespace Eigen;
 
 struct Forward{
@@ -18,6 +20,8 @@ Matrix4f Rot(double x, double y, double z);
 Forward forwardkin(double qh[4], double qhg[3]);
 
 Vector3f invkin(Matrix4f desired, double qh[4]);
+
+void robotcallback(const control_msgs::JointTrajectoryControllerStateConstPtr& qhmsg);
 
 bool setRunningCallBack(steadycam::setRunning::Request &req,
                         steadycam::setRunning::Response &res);

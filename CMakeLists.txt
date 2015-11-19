@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   roscpp
   rospy
+  control_msgs
   std_msgs
   message_generation
 )
@@ -78,6 +79,7 @@ generate_messages(
   DEPENDENCIES
   geometry_msgs
   std_msgs
+  control_msgs
 )
 
 ################################################
@@ -200,7 +202,7 @@ include_directories(
 # catkin_add_nosetests(test)
 
 add_executable(steadycam src/steadycam.cpp src/steadycam.h)
-target_link_libraries(steadycam 
+target_link_libraries(steadycam
  ${catkin_LIBRARIES}
  ${Eigen_LIBRARIES}
 )

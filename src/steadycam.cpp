@@ -16,6 +16,7 @@
 #include <eigen3/Eigen/Dense>
 #include "math.h"
 
+
 using namespace std;
 using namespace ros;
 using namespace Eigen;
@@ -40,13 +41,28 @@ Matrix4f T08;
 Matrix3f J;
 Vector4f qh;
 
+
+/*
+ * Callback for topic updates on the robots joint vector
+ */
+void robotcallback(const control_msgs::JointTrajectoryControllerStateConstPtr& qhmsg)
+{
+    ROS_INFO("Got an updated trajectory msg");
+    float angles;
+
+    cout << qhmsg->actual.positions[0];
+    cout << qhmsg->actual.positions[1];
+    cout << qhmsg->actual.positions[2];
+    cout << qhmsg->actual.positions[3];
+    cout << "\n\r\n\r";
+
+}
+
 /*
  * Main program entry point
  */
 int main(int argc, char **argv)
 {
-    //Initialize floating variables (oppdateres kontinuerlig)
-
     qh << 0.0,
           -M_PI/2,
            M_PI/2,
@@ -58,7 +74,12 @@ int main(int argc, char **argv)
     init(argc,argv,"steadycam");
     NodeHandle n;
 
+    // Advertise the steadycam_servo_control topic
     Publisher pub = n.advertise<geometry_msgs::Vector3>("steadycam_servo_control",1000);
+
+    // Subscribe to the robot joint vector topic
+    Subscriber sub = n.subscribe("/ag1/position_trajectory_controller/state",1,robotcallback);
+
 
     //Setting up the necessary service servers
     ServiceServer service1 = n.advertiseService("setRunning", setRunningCallBack);
@@ -84,23 +105,43 @@ int main(int argc, char **argv)
             // Control mode == True => position mode
             if(control_mode)
             {
+                double robot_angles[4] = {qh(0), qh(1), qh(2), qh(3)};
+                double qhg[3] = {0.0, 0.0, 0.0};
+                Forward f = forwardkin(robot_angles,qhg);
+                Vector3f diff;
+                diff << point(0)-f.Ti(0,3),
+                        point(1)-f.Ti(1,3),
+                        point(2)-f.Ti(2,3);
+                double hyp = sqrt(diff(0)*diff(0) + diff(1)*diff(1));
+                double yaw;
+                double pitch = atan2(diff(2),hyp);
+                double roll = 0.0;
 
-                msg.x = 0.0;
-                msg.y = 0.0;
-                msg.z = 0.0;
+                if(diff(1)<0)
+                {
+                    yaw = atan2(-diff(1),diff(0));
+                }
+                else
+                {
+                    yaw = -atan2(diff(1),diff(0));
+                }
+
+                Vector3f gimbaljoint = invkin(Rot(roll,yaw,-pitch),robot_angles);
+
+                msg.x = gimbaljoint(0);
+                msg.y = gimbaljoint(1);
+                msg.z = gimbaljoint(2);
             }
 
             // Control mode == False => Angle mode
             else
             {
-                ROS_INFO("Running inverse kinematics");
                 double robot_angles[4] = {qh(0), qh(1), qh(2), qh(3)};
                 //calculate gimbal joint vector
                 Vector3f gimbal_joint = invkin(Rot(angle(0),angle(1),angle(2)),robot_angles);
                 msg.x = gimbal_joint(0);
                 msg.y = gimbal_joint(1);
                 msg.z = gimbal_joint(2);
-
             }
         }
         else
@@ -123,7 +164,7 @@ int main(int argc, char **argv)
 Vector3f invkin(Matrix4f Td, double qh[4])
 {
     double qcurrent[3] = {0.0, 0.0, 0.0};
-    Matrix4f desired = Td *Rot(-M_PI/2,0.0,0.0);
+    Matrix4f desired = Rot(-M_PI/2,0.0,0.0)*Td ;
 
     Matrix3f Rd;
 
@@ -219,7 +260,7 @@ Forward forwardkin(double qh[4], double qhg[3])
 }
 
 /*
- * Creates a rotation matrix mased on the given input (used for kinematics)
+ * Creates a rotation matrix based on the given input (used for kinematics)
  */
 Matrix4f Rot(double x, double y, double z)
 {
@@ -232,7 +273,8 @@ Matrix4f Rot(double x, double y, double z)
 }
 
 /*
- * Callback for service "setRunning" Used to set the running state of the node
+ * Callback for service "setRunning"
+ * Used to set the running state of the node
  */
 bool setRunningCallBack(steadycam::setRunning::Request &req,
                         steadycam::setRunning::Response &res)
@@ -243,12 +285,13 @@ bool setRunningCallBack(steadycam::setRunning::Request &req,
 }
 
 /*
- * Callback for service "setPoint" Used to set the reference point in space for the gimbal to track
+ * Callback for service "setPoint"
+ * Used to set the reference point in space for the gimbal to track
  */
 bool setPointCallBack(steadycam::setPoint::Request &req,
                       steadycam::setPoint::Response &res)
 {
-    ROS_INFO("I got a new tracking point");
+    //ROS_INFO("I got a new tracking point");
     point << req.position_lock.x,
              req.position_lock.y,
              req.position_lock.z;
@@ -256,7 +299,8 @@ bool setPointCallBack(steadycam::setPoint::Request &req,
 }
 
 /*
- * Callback for service "setEulerAngles" Used to set the reference angles for the gimbal to hold
+ * Callback for service "setEulerAngles"
+ * Used to set the reference angles for the gimbal to hold
  */
 bool setEulerAnglesCallBack(steadycam::setEulerAngles::Request &req,
                             steadycam::setEulerAngles::Response &res)
@@ -269,7 +313,8 @@ bool setEulerAnglesCallBack(steadycam::setEulerAngles::Request &req,
 }
 
 /*
- * Callback for service "setControlMode" Used to set the control mode (fixed angle or tracking point)
+ * Callback for service "setControlMode"
+ * Used to set the control mode (fixed angle or tracking point)
  */
 bool setControlModeCallBack(steadycam::setControlMode::Request &req,
                             steadycam::setControlMode::Response &res)
@@ -280,7 +325,8 @@ bool setControlModeCallBack(steadycam::setControlMode::Request &req,
 }
 
 /*
- * Callback for service "getControlMode" Used to report current control mode
+ * Callback for service "getControlMode"
+ * Used to report current control mode
  */
 bool getControlModeCallBack(steadycam::getControlMode::Request &req,
                             steadycam::getControlMode::Response &res)
@@ -290,7 +336,8 @@ bool getControlModeCallBack(steadycam::getControlMode::Request &req,
 }
 
 /*
- * Callback for service "getEulerAngles" Used to report current Euler angles
+ * Callback for service "getEulerAngles"
+ * Used to report current Euler angles
  */
 bool getEulerAnglesCallBack(steadycam::getEulerAngles::Request &req,
                             steadycam::getEulerAngles::Response &res)
@@ -302,7 +349,8 @@ bool getEulerAnglesCallBack(steadycam::getEulerAngles::Request &req,
 }
 
 /*
- * Callback for service "getPoint" Used to report current tracking point in space
+ * Callback for service "getPoint"
+ * Used to report current tracking point in space
  */
 bool getPointCallBack(steadycam::getPoint::Request &req,
                       steadycam::getPoint::Response &res)
@@ -314,7 +362,8 @@ bool getPointCallBack(steadycam::getPoint::Request &req,
 }
 
 /*
- * Callback for service "getRunning" Used to report current running status
+ * Callback for service "getRunning"
+ * Used to report current running status
  */
 bool getRunningCallBack(steadycam::getRunning::Request &req,
                         steadycam::getRunning::Response &res)
