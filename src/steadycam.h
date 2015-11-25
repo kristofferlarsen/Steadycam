@@ -1,5 +1,6 @@
 //
-// Created by minions on 17.11.15.
+// Created by Kristoffer Larsen & Asgeir Bjørkedal
+// for a semester project in Robotics at NTNU Trondheim
 //
 
 #ifndef STEADYCAM_STEADYCAM_H
@@ -10,6 +11,9 @@
 
 using namespace Eigen;
 
+/*
+ * Define a struct for use in the kinematics calculations
+ */
 struct Forward{
     Matrix4f Ti;
     Matrix3f Ji;
