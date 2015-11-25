@@ -162,12 +162,11 @@ int main(int argc, char **argv) {
 Vector3f invkin(Matrix4f Td, double qh[4]) {
     double qcurrent[3] = {0.0, 0.0, 0.0};
     Matrix4f desired = Rot(-M_PI / 2, 0.0, 0.0) * Td;
-
     Matrix3f Rd;
-
     Rd << desired(0, 0), desired(0, 1), desired(0, 2),
-            desired(1, 0), desired(1, 1), desired(1, 2),
-            desired(2, 0), desired(2, 1), desired(2, 2);
+          desired(1, 0), desired(1, 1), desired(1, 2),
+          desired(2, 0), desired(2, 1), desired(2, 2);
+
     Forward f;
     for (int i = 0; i < 5; i++) {
         f = forwardkin(qh, qcurrent);
@@ -175,12 +174,14 @@ Vector3f invkin(Matrix4f Td, double qh[4]) {
         Rcurrent << f.Ti(0, 0), f.Ti(0, 1), f.Ti(0, 2),
                 f.Ti(1, 0), f.Ti(1, 1), f.Ti(1, 2),
                 f.Ti(2, 0), f.Ti(2, 1), f.Ti(2, 2);
+
         Matrix3f Rerror;
         Rerror = Rd * Rcurrent.inverse();
         Vector3f error;
         error << (1.0 / 2.0) * (Rerror(2, 1) - Rerror(1, 2)),
-                (1.0 / 2.0) * (Rerror(0, 2) - Rerror(2, 0)),
-                (1.0 / 2.0) * (Rerror(1, 0) - Rerror(0, 1));
+                 (1.0 / 2.0) * (Rerror(0, 2) - Rerror(2, 0)),
+                 (1.0 / 2.0) * (Rerror(1, 0) - Rerror(0, 1));
+
         double k = 1.0;
         Vector3f desiredQ = k * f.Ji.inverse() * error;
         qcurrent[0] = qcurrent[0] + desiredQ(0);
@@ -189,8 +190,8 @@ Vector3f invkin(Matrix4f Td, double qh[4]) {
     }
     Vector3f out;
     out << qcurrent[0],
-            qcurrent[1],
-            qcurrent[2];
+           qcurrent[1],
+           qcurrent[2];
     return out;
 }
 
@@ -230,23 +231,17 @@ Forward forwardkin(double qh[4], double qhg[3]) {
             0.0, 0.0, 0.0, 1.0;
 
     T05 = T00 * T01 * T12 * T23 * T34 * T45;
-
     T56 = Rot(0.0, M_PI / 2, qhg[0]);
-
     T67 = Rot(0.0, -M_PI / 2, qhg[1]);
-
     T78 = Rot(-M_PI / 2, 0.0, qhg[2]);
-
     T06 = T05 * T56;
-
     T07 = T06 * T67;
-
     T08 = T07 * T78;
 
     //Create geometric Jacobian for the gimbal pose
     J << T06(0, 2), T07(0, 2), T08(0, 2),
-            T06(1, 2), T07(1, 2), T08(1, 2),
-            T06(2, 2), T07(2, 2), T08(2, 2);
+         T06(1, 2), T07(1, 2), T08(1, 2),
+         T06(2, 2), T07(2, 2), T08(2, 2);
 
     Forward f;
     f.Ti = T08;
