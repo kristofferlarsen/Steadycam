@@ -16,8 +16,8 @@ inverse kinematics (the inverse Jacobian approach). For our project, this produc
 
 This project depends on:
 
-  -Eigen3 (matrix calculation)
+    -Eigen3 (matrix calculation)
 
-  -Rosserial (ros-arduino communication)
+    -Rosserial (ros-arduino communication)
 
-  -DynamixelSerial1 (arduino-dynamixel communication)
+   -DynamixelSerial1 (arduino-dynamixel communication)
